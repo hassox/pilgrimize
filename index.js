@@ -3,6 +3,12 @@ var mach = require('mach'),
     spawn = require('child_process').spawn,
     yargs = require('yargs'),
     Path = require('path'),
+    Glob = require('glob'),
+    fs = require('fs'),
+    Protofile = require('protob/lib/compiler/protofile').Protofile,
+    protoFile,
+    protoFilePromise,
+    protoFileIndex = {},
     cmdArgs = [],
     compiling = false,
     running = false,
@@ -41,6 +47,21 @@ cmdArgs.push("-f " + argv.bundle.trim());
 cmdArgs.push("--no-node");
 cmdArgs.push(argv.file);
 
+Protofile.protoCache = '.proto_cache';
+Protofile.protoPaths.push(argv.file); // argv.file
+
+protoFile = new Protofile();
+
+function indexProtoFiles() {
+  protoFileIndex = {};
+  protoFile.importPaths().forEach(function(pth) {
+    var fullPaths = Glob.sync(Path.join(pth, '**/*.proto'));
+    for(var i = 0; i < fullPaths.length; i++) {
+      protoFileIndex[Path.relative(pth, fullPaths[i])] = fullPaths[i];
+    }
+  });
+}
+
 function compileProtos() {
   if(compiling) return; 
   compiling = true;
@@ -65,17 +86,20 @@ function compileProtos() {
 }
 
 function run() {
+  indexProtoFiles();
   if(running) return;
   serveApp();
   listenForRecompile();
 }
 
 
-app.use(function(app) {
+app.use(function(_app) {
   return function(request) {
-    return request.call(app)
+    return request.call(_app)
     .then(function(resp) {
+      resp.addHeader('Access-Control-Expose-Headers', 'X-Proto-Path');
       resp.addHeader('Access-Control-Allow-Origin', '*');
+      resp.addHeader('X-Proto-Path', '/proto-file');
       return resp;
     });
   };
@@ -87,6 +111,16 @@ app.use(mach.file, {
   root: process.cwd(),
   useLastModifier: false,
   useETag: false
+});
+
+// Serve up protos
+app.get("/proto-file/*.proto", function(request) {
+  var fullFile = protoFileIndex[request.params.splat + '.proto'];
+  if(fullFile) {
+    return fs.createReadStream(fullFile);
+  } else {
+    return { status: 404, content: "Not Found" };
+  }
 });
 
 if(!argv.skip) {
@@ -104,5 +138,4 @@ function listenForRecompile() {
   console.log("Hit enter to recompile your protos");
   process.stdin.on('data', function(data) { if(!compiling) compileProtos(); });
 }
-
 
