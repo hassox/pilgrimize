@@ -1,0 +1,21 @@
+{
+  "name": "pilgrimize",
+  "version": "0.1.0",
+  "description": "Make your protos avaialbe on pilgrim",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "keywords": [
+    "pilgrim",
+    "protobuf",
+    "documentation"
+  ],
+  "dependencies": {
+    "protob": "1.0.0",
+    "mach": "mjackson/mach.git#1.0",
+    "yargs": "*"
+  },
+  "author": "Daniel Neighman",
+  "license": "MIT"
+}
