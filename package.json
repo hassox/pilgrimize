@@ -15,7 +15,7 @@
     "documentation"
   ],
   "dependencies": {
-    "protob": "1.0.0",
+    "protob": "1.0.1",
     "mach": "mjackson/mach.git#1.0",
     "yargs": "*",
     "glob": "*"
