@@ -21,3 +21,7 @@ Run pilgrimize
     $> pilgrimize
 
 Visit pilgrim!
+
+If you just want to compile your protos.json file without setting up a localhost for talking with fender:
+
+    $> pilgrimize --no-localhost

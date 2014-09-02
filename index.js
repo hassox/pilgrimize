@@ -29,12 +29,16 @@ var mach = require('mach'),
       .alias('b', 'bundle')
       .describe('o', 'Output directory')
       .alias('o', 'out')
+      .boolean('l')
+      .describe('l', 'Host locally')
+      .alias('l', 'localhost')
       .default({
         s: false,
         p: 9151,
         b: 'proto-bundle.json',
         o: './',
-        f: './protos.json'
+        f: './protos.json',
+        l: true,
       }).argv;
 
 if(argv.help) {
@@ -88,8 +92,10 @@ function compileProtos() {
 function run() {
   indexProtoFiles();
   if(running) return;
-  serveApp();
-  listenForRecompile();
+  if(argv.localhost) {
+    serveApp();
+    listenForRecompile();
+  }
 }
 
 
