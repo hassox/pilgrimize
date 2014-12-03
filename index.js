@@ -120,8 +120,8 @@ app.use(mach.file, {
 });
 
 // Serve up protos
-app.get("/proto-file/*.proto", function(request) {
-  var fullFile = protoFileIndex[request.params.splat + '.proto'];
+app.get("/proto-file/*.proto", function(conn) {
+  var fullFile = protoFileIndex[conn.params.splat + '.proto'];
   if(fullFile) {
     return fs.createReadStream(fullFile);
   } else {
