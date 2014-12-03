@@ -1,6 +1,6 @@
 {
   "name": "pilgrimize",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Make your protos avaialbe on pilgrim",
   "main": "index.js",
   "bin": {

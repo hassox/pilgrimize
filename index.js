@@ -100,14 +100,11 @@ function run() {
 
 
 app.use(function(_app) {
-  return function(request) {
-    return request.call(_app)
-    .then(function(resp) {
-      resp.addHeader('Access-Control-Expose-Headers', 'X-Proto-Path');
-      resp.addHeader('Access-Control-Allow-Origin', '*');
-      resp.addHeader('X-Proto-Path', '/proto-file');
-      return resp;
-    });
+  return function(conn) {
+    conn.response.addHeader('Access-Control-Expose-Headers', 'X-Proto-Path');
+    conn.response.addHeader('Access-Control-Allow-Origin', '*');
+    conn.response.addHeader('X-Proto-Path', '/proto-file');
+    return conn.call(_app);
   };
 });
 
