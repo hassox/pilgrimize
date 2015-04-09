@@ -15,7 +15,7 @@
     "documentation"
   ],
   "dependencies": {
-    "protob": "1.0.1",
+    "protob": "1.2.0",
     "mach": "^1.0.0-rc3",
     "yargs": "*",
     "glob": "*"
